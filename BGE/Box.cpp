@@ -15,6 +15,10 @@ Box::Box(float width, float height, float depth):GameComponent(true)
 	initialised = false;
 }
 
+Box::Box(glm::vec3 vec3) :Box(vec3.x, vec3.y, vec3.z)
+{
+}
+
 bool Box::Initialise()
 {
 	if (!initialised)

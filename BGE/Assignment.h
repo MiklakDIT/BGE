@@ -13,9 +13,7 @@ public:
 	~Assignment();
 	bool Initialise();
 	void Update();
-	void AttachBlock(float x, float y, float z);
-	void BuildPyramid(int pyr_size, glm::vec3 _pyramid_position, glm::vec3 _block_size);
-	glm::vec3 pyramid_position, block_size;
+	void BuildPyramid(int pyr_size, glm::vec3 pyr_position, glm::vec3 block_size);
 
 	shared_ptr<GameComponent> box;
 };
