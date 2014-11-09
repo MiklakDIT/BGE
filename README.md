@@ -1,33 +1,16 @@
-![Alt text](https://raw.github.com/skooter500/BGE/master/Logo/BGE_Logo_01.png)
+# Kamil Orłowski
+# C11743571
 
-* [Course Notes](Course/index.md)
-* [Labs](Labs/index.md)
-* [Assignment](Course/assignment.md)
+# Interim assignment
+Changes have been made to:
+Assignment class - a new sub-class of Game which builds five pyramids using the Box class
+Box class - added a new constructor that takes a vec3 as a parameter
 
-My scene graph based, C++ 3D engine that makes use of:
-* OpenGL 3 with shaders
-* GLEW
-* SDL
-* SDL_ttf
-* Bullet Physics
-* GLM
-* The Kinect SDK
-* FMOD
-* The Oculus Rift SDK
+# Plans for the main assignment
+My plan is to animate a spider. The spider has eight legs, each joined with the cephalothorax. Other parts of body connected with cephalothorax are the head, the abdomen and palpi.
 
+![](spider1.png)
 
-The engine supports:
+A walking spider uses eight legs to move. Those legs have several joints each and they move in coordination. The second pair of legs counters the first pair. The third pair follows the first, and the fourth mirrors the movement of the second pair.
 
-* A C++ API inspired by XNA
-* A really cool component based scene graph inspired by Unity
-* Load simple 3D models, textures and sounds through a content pipeline
-* An API for drawing lines and text
-* Physically simulated rigid bodies and a factory for making them
-* Kinect Skeletal tracking
-* Output to the Oculus rift
-
-To build:
-
-* Download the dependencies from here: http://1drv.ms/1olPefQ
-* Unzip to the folder Dependencies in your project 
-* Use the included Visual Studio 2013 project files
+![](spider2.png)
