@@ -45,6 +45,9 @@
     <Filter Include="Kinect1">
       <UniqueIdentifier>{a87354c5-e358-43d6-9181-2d883053f9db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animats">
+      <UniqueIdentifier>{3b4918be-35f7-4b60-9447-5485a0e80a93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -236,6 +239,12 @@
     <ClCompile Include="Person.cpp">
       <Filter>Kinect1</Filter>
     </ClCompile>
+    <ClCompile Include="SpiderFactory.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Spider.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -422,6 +431,8 @@
     <ClInclude Include="Person.h">
       <Filter>Kinect1</Filter>
     </ClInclude>
+    <ClInclude Include="SpiderFactory.h" />
+    <ClInclude Include="Spider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\CubeShader.fragmentshader">

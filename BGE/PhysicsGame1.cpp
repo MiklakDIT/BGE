@@ -1,5 +1,6 @@
 #include "PhysicsGame1.h"
 #include "PhysicsController.h"
+#include "SpiderFactory.h"
 #include "Sphere.h"
 #include "PhysicsCamera.h"
 #include "Box.h"
@@ -35,8 +36,8 @@ bool PhysicsGame1::Initialise()
 
 
 
-	setGravity(glm::vec3(0, -9, 0));
-
+	setGravity(glm::vec3(0, -8, 0));
+	/*
 	glm::quat q = glm::angleAxis(90.0f, glm::vec3(1, 0, 0));
 	shared_ptr<PhysicsController> box1 = physicsFactory->CreateBox(1, 1, 6, glm::vec3(1, 15, -14), glm::quat());
 	shared_ptr<PhysicsController> box2 = physicsFactory->CreateBox(1,1,6, glm::vec3(1, 15, 0), glm::quat()); 
@@ -101,6 +102,15 @@ bool PhysicsGame1::Initialise()
 	//// Create a physics car
 	physicsFactory->CreateVehicle(glm::vec3(5, 5, 10));
 
+	*/
+	// Spider..
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+	SpiderFactory(physicsFactory->dynamicsWorld).CreateSpider(glm::vec3(25*i, 0, 25*j));
+
+	physicsFactory->CreateBox(50, 5, 10, glm::vec3(150, 0, 150), glm::quat());
+	//physicsFactory->CreateSpider(glm::vec3(50, 0, 50));
+	//physicsFactory->CreateCapsuleRagdoll(glm::vec3(10, 10, 10));
 
 	return Game::Initialise();
 }

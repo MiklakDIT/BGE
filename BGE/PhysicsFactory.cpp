@@ -29,9 +29,9 @@ void PhysicsFactory::CreateWall(glm::vec3 startAt, float width, float height, fl
 	float z = startAt.z;
 	float gap = 1;
 
-	for (int w = 0 ; w < width ; w ++)
+	for (int w = 0; w < width; w++)
 	{
-		for (int h = 0 ; h < height ; h ++)	
+		for (int h = 0; h < height; h++)
 		{
 			float x = startAt.x + ((blockWidth + 2) * w);
 			float y = ((blockHeight + gap) / 2.0f) + ((blockHeight + gap) * h);
@@ -51,29 +51,29 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateFromModel(string name, glm::
 	component->Attach(model);
 	model->Initialise();
 
-	std::vector<glm::vec3>::iterator it = model->vertices.begin(); 	
+	std::vector<glm::vec3>::iterator it = model->vertices.begin();
 	btConvexHullShape * tetraShape = new btConvexHullShape();
 
 	while (it != model->vertices.end())
 	{
-		glm::vec4 point = glm::vec4(* it, 0) * glm::scale(glm::mat4(1), scale);
+		glm::vec4 point = glm::vec4(*it, 0) * glm::scale(glm::mat4(1), scale);
 		tetraShape->addPoint(GLToBtVector(glm::vec3(point)));
-		it ++;
+		it++;
 	}
-	
+
 	btScalar mass = standardMass;
-	btVector3 inertia(0,0,0);
-	
-	tetraShape->calculateLocalInertia(mass,inertia);
+	btVector3 inertia(0, 0, 0);
+
+	tetraShape->calculateLocalInertia(mass, inertia);
 	btDefaultMotionState * motionState = new btDefaultMotionState(btTransform(GLToBtQuat(quat)
-		,GLToBtVector(pos)));	
-	
-	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,motionState, tetraShape, inertia);
+		, GLToBtVector(pos)));
+
+	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motionState, tetraShape, inertia);
 	btRigidBody * body = new btRigidBody(rigidBodyCI);
 	//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	dynamicsWorld->addRigidBody(body);
 
-	shared_ptr<PhysicsController> controller = make_shared<PhysicsController>(tetraShape, body, motionState);	
+	shared_ptr<PhysicsController> controller = make_shared<PhysicsController>(tetraShape, body, motionState);
 	body->setUserPointer(controller.get());
 	component->Attach(controller);
 	return controller;
@@ -89,27 +89,27 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateSphere(float radius, glm::ve
 		Game::Instance()->Attach(sphere);
 	}
 	btDefaultMotionState * sphereMotionState = new btDefaultMotionState(btTransform(GLToBtQuat(quat)
-		,GLToBtVector(pos)));	
+		, GLToBtVector(pos)));
 
 	btScalar mass = (kinematic) ? 0 : standardMass;
-	btVector3 sphereInertia(0,0,0);
+	btVector3 sphereInertia(0, 0, 0);
 	btCollisionShape * sphereShape = new btSphereShape(radius);
 
-	sphereShape->calculateLocalInertia(mass,sphereInertia);
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,sphereMotionState, sphereShape, sphereInertia);
+	sphereShape->calculateLocalInertia(mass, sphereInertia);
+	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, sphereMotionState, sphereShape, sphereInertia);
 	btRigidBody * body = new btRigidBody(fallRigidBodyCI);
 	if (kinematic)
 	{
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);		
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	}
 	body->setActivationState(DISABLE_DEACTIVATION);
 	//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	dynamicsWorld->addRigidBody(body);
 
-	shared_ptr<PhysicsController> sphereController (new PhysicsController(sphereShape, body, sphereMotionState));	
+	shared_ptr<PhysicsController> sphereController(new PhysicsController(sphereShape, body, sphereMotionState));
 	body->setUserPointer(sphereController.get());
 	sphere->Attach(sphereController);
-	sphereController->tag = "Sphere";	
+	sphereController->tag = "Sphere";
 	return sphereController;
 }
 
@@ -119,15 +119,15 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateBox(float width, float heigh
 	// Create the shape
 	btCollisionShape * boxShape = new btBoxShape(btVector3(width, height, depth) * 0.50);
 	btScalar mass = (kinematic) ? 0 : standardMass;
-	btVector3 boxInertia(0,0,0);
-	boxShape->calculateLocalInertia(mass,boxInertia);
+	btVector3 boxInertia(0, 0, 0);
+	boxShape->calculateLocalInertia(mass, boxInertia);
 
 	// This is a container for the box model
 	shared_ptr<Box> box = make_shared<Box>(width, height, depth);
 	box->Initialise();
 	box->transform->position = pos;
-	cout << "CreateBox(): " << box -> transform -> position.x << ", " << box -> transform -> position.y << ", " << box -> transform -> position.z << endl; 
-	box -> transform -> Calculate(); 
+	cout << "CreateBox(): " << box->transform->position.x << ", " << box->transform->position.y << ", " << box->transform->position.z << endl;
+	box->transform->Calculate();
 
 	if (attachToGame)
 	{
@@ -135,13 +135,13 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateBox(float width, float heigh
 	}
 	// Create the rigid body
 	btDefaultMotionState * boxMotionState = new btDefaultMotionState(btTransform(GLToBtQuat(quat)
-		,GLToBtVector(pos)));			
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,  boxMotionState, boxShape, boxInertia);
+		, GLToBtVector(pos)));
+	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, boxMotionState, boxShape, boxInertia);
 	btRigidBody * body = new btRigidBody(fallRigidBodyCI);
 	body->setFriction(567);
 	if (kinematic)
 	{
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);		
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	}
 	body->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(body);
@@ -162,9 +162,9 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCylinder(float radius, float
 	btCollisionShape * shape = new btCylinderShape(btVector3(radius, height * 0.5f, radius));
 
 	btScalar mass = (kinematic) ? 0 : standardMass;
-	
-	btVector3 inertia(0,0,0);
-	shape->calculateLocalInertia(mass,inertia);
+
+	btVector3 inertia(0, 0, 0);
+	shape->calculateLocalInertia(mass, inertia);
 
 	// This is a container for the box model
 	shared_ptr<GameComponent> cyl = make_shared<Cylinder>(radius, height);
@@ -177,12 +177,12 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCylinder(float radius, float
 
 	btTransform transform = btTransform(GLToBtQuat(quat), GLToBtVector(pos));
 	glm::quat q = BtToGLQuat(transform.getRotation());
-	btDefaultMotionState * motionState = new btDefaultMotionState(transform);			
-	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,  motionState, shape, inertia);
+	btDefaultMotionState * motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motionState, shape, inertia);
 	btRigidBody * body = new btRigidBody(rigidBodyCI);
 	if (kinematic)
 	{
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);		
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	}
 	body->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(body);
@@ -190,7 +190,7 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCylinder(float radius, float
 	// Create the physics component and add it to the box
 	shared_ptr<PhysicsController> component = make_shared<PhysicsController>(shape, body, motionState);
 	body->setUserPointer(component.get());
-	cyl->Attach(component);	
+	cyl->Attach(component);
 	return component;
 }
 
@@ -205,7 +205,7 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCameraPhysics()
 	shared_ptr<Camera> camera = Game::Instance()->camera;
 	camera->Attach(physicsCamera);
 
-	btRigidBody::btRigidBodyConstructionInfo cameraCI(10,physicsCamera.get(), cameraCyl, inertia);  
+	btRigidBody::btRigidBodyConstructionInfo cameraCI(10, physicsCamera.get(), cameraCyl, inertia);
 	btRigidBody * body = new btRigidBody(cameraCI);
 	physicsCamera->SetPhysicsStuff(cameraCyl, body, physicsCamera.get());
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
@@ -226,30 +226,30 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateVehicle(glm::vec3 position)
 
 	shared_ptr<PhysicsController> chassis = CreateBox(width, height, length, position, glm::quat());
 	shared_ptr<PhysicsController> wheel;
-	glm::quat q =  glm::angleAxis(90.0f, glm::vec3(1, 0, 0));
+	glm::quat q = glm::angleAxis(90.0f, glm::vec3(1, 0, 0));
 
 	glm::vec3 offset;
 	btHingeConstraint * hinge;
 
-	offset = glm::vec3(- (width / 2 - wheelRadius), 0, - (length / 2 + wheelOffset));
-	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);	 
-	hinge = new btHingeConstraint(* chassis->rigidBody, * wheel->rigidBody, GLToBtVector(offset),btVector3(0,0, 0), btVector3(0,0,1), btVector3(0,1,0), true);
+	offset = glm::vec3(-(width / 2 - wheelRadius), 0, -(length / 2 + wheelOffset));
+	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);
+	hinge = new btHingeConstraint(*chassis->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
 	dynamicsWorld->addConstraint(hinge);
 
-	offset = glm::vec3(+ (width / 2 - wheelRadius), 0, - (length / 2 + wheelOffset));
+	offset = glm::vec3(+(width / 2 - wheelRadius), 0, -(length / 2 + wheelOffset));
 	wheel = CreateCylinder(wheelRadius, wheelWidth, glm::vec3(position.x + (width / 2) - wheelRadius, position.y, position.z - (length / 2) - wheelWidth), q);
-	hinge = new btHingeConstraint(* chassis->rigidBody, * wheel->rigidBody, GLToBtVector(offset),btVector3(0,0, 0), btVector3(0,0,1), btVector3(0,1,0), true);
+	hinge = new btHingeConstraint(*chassis->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
 	dynamicsWorld->addConstraint(hinge);
 
-	offset = glm::vec3(- (width / 2 - wheelRadius), 0, + (length / 2 + wheelOffset));
-	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);	 
-	hinge = new btHingeConstraint(* chassis->rigidBody, * wheel->rigidBody, GLToBtVector(offset),btVector3(0,0, 0), btVector3(0,0,1), btVector3(0,1,0), true);
+	offset = glm::vec3(-(width / 2 - wheelRadius), 0, +(length / 2 + wheelOffset));
+	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);
+	hinge = new btHingeConstraint(*chassis->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
 	dynamicsWorld->addConstraint(hinge);
 
-	offset = glm::vec3(+ (width / 2 - wheelRadius), 0, + (length / 2 + wheelOffset));
-	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);	 
-	hinge = new btHingeConstraint(* chassis->rigidBody, * wheel->rigidBody, GLToBtVector(offset),btVector3(0,0, 0), btVector3(0,0,1), btVector3(0,1,0), true);
-	hinge->enableAngularMotor(true, -10, 10);	
+	offset = glm::vec3(+(width / 2 - wheelRadius), 0, +(length / 2 + wheelOffset));
+	wheel = CreateCylinder(wheelRadius, wheelWidth, position + offset, q);
+	hinge = new btHingeConstraint(*chassis->rigidBody, *wheel->rigidBody, GLToBtVector(offset), btVector3(0, 0, 0), btVector3(0, 0, 1), btVector3(0, 1, 0), true);
+	hinge->enableAngularMotor(true, -10, 10);
 	dynamicsWorld->addConstraint(hinge);
 
 	return chassis;
@@ -259,19 +259,19 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateGroundPhysics()
 {
 	shared_ptr<Ground> ground = make_shared<Ground>();
 
-	btCollisionShape * groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
-	btDefaultMotionState * groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,0,0)));
+	btCollisionShape * groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	btDefaultMotionState * groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
 
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 	btRigidBody* body = new btRigidBody(groundRigidBodyCI);
 	body->setFriction(100);
 	dynamicsWorld->addRigidBody(body);
 	body->setUserPointer(ground.get());
 	//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	shared_ptr<PhysicsController> groundComponent (new PhysicsController(groundShape, body, groundMotionState));
+	shared_ptr<PhysicsController> groundComponent(new PhysicsController(groundShape, body, groundMotionState));
 	groundComponent->tag = "Ground";
 	Game::Instance()->SetGround(ground);
-	ground->Attach(groundComponent);	
+	ground->Attach(groundComponent);
 	return groundComponent;
 }
 
@@ -280,11 +280,11 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateRandomObject(glm::vec3 point
 	vector<string> names;
 	DIR * dir;
 	struct dirent * ent;
-	dir = opendir (Content::prefix.c_str());
-	if (dir != NULL) 
+	dir = opendir(Content::prefix.c_str());
+	if (dir != NULL)
 	{
 		/* print all the files and directories within directory */
-		while ((ent = readdir (dir)) != NULL) 
+		while ((ent = readdir(dir)) != NULL)
 		{
 			string fname = string(ent->d_name);
 			int fpos = fname.find("objm");
@@ -296,9 +296,9 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateRandomObject(glm::vec3 point
 				}
 			}
 		}
-		closedir (dir);
-	} 
-	else 
+		closedir(dir);
+	}
+	else
 	{
 		throw BGE::Exception("Could not list obj files in content folder");
 	}
@@ -308,10 +308,10 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateRandomObject(glm::vec3 point
 	return CreateFromModel(name, point, q, scale);
 }
 
-shared_ptr<PhysicsController> PhysicsFactory::CreateCapsule(float radius, float height, glm::vec3 pos, glm::quat quat)
+shared_ptr<PhysicsController> PhysicsFactory::CreateCapsule(float radius, float height, glm::vec3 pos, glm::quat quat, bool kinematic)
 {
 	btCollisionShape* capsuleShape = new btCapsuleShape(btScalar(radius), btScalar(height));
-	btScalar mass = 1;
+	btScalar mass = kinematic ? 0 : 1;
 	btVector3 inertia(0, 0, 0);
 	capsuleShape->calculateLocalInertia(mass, inertia);
 
@@ -340,7 +340,6 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCapsule(float radius, float 
 
 shared_ptr<PhysicsController> PhysicsFactory::CreateCapsuleRagdoll(glm::vec3 position)
 {
-
 
 	btHingeConstraint* spine_pelvis;
 	btHingeConstraint* left_upper_leg_left_lower_leg;
@@ -385,9 +384,9 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCapsuleRagdoll(glm::vec3 pos
 	dynamicsWorld->addConstraint(head_spine);
 
 	localA.setIdentity(); localB.setIdentity();
-	localA.getBasis().setEulerZYX(0, 0, -glm::quarter_pi<float>() * 5); 
+	localA.getBasis().setEulerZYX(0, 0, -glm::quarter_pi<float>() * 5);
 	localA.setOrigin(btVector3(btScalar(-1.5), btScalar(-2.5), btScalar(0.)));
-	localB.getBasis().setEulerZYX(0, 0, -glm::quarter_pi<float>() * 5); 
+	localB.getBasis().setEulerZYX(0, 0, -glm::quarter_pi<float>() * 5);
 	localB.setOrigin(btVector3(btScalar(0.), btScalar(2.5), btScalar(0.)));
 	pelvis_left_upper_leg = new btConeTwistConstraint(*bodypart_pelvis->rigidBody, *bodypart_left_upper_leg->rigidBody, localA, localB);
 	pelvis_left_upper_leg->setLimit(glm::quarter_pi<float>(), glm::half_pi<float>(), 0);
@@ -443,4 +442,192 @@ shared_ptr<PhysicsController> PhysicsFactory::CreateCapsuleRagdoll(glm::vec3 pos
 	dynamicsWorld->addConstraint(right_upper_arm_right_lower_arm);
 
 	return bodypart_spine;
+}
+
+shared_ptr<PhysicsController> PhysicsFactory::CreateSpider(glm::vec3 position)
+{
+
+	double SQRT2 = 1.414213562373095;
+	shared_ptr<PhysicsController> cephalothorax = CreateCapsule(4, 1, glm::vec3(position.x, position.y, position.z), glm::quat());
+	shared_ptr<PhysicsController> abdomen = CreateCapsule(4, 1, glm::vec3(position.x + 8, position.y, position.z), glm::quat());
+	shared_ptr<PhysicsController> head = CreateCapsule(1, 0.5, glm::vec3(position.x - 5, position.y + 6, position.z), glm::quat());
+
+	btTransform localA, localB;
+
+	btHingeConstraint* abdomen_cephalothorax;
+	localA.setIdentity(); localB.setIdentity();
+	localA.getBasis().setEulerZYX(0, 0, M_PI); localA.setOrigin(btVector3(-4.5, 0, 0));
+	localB.getBasis().setEulerZYX(0, 0, M_PI); localB.setOrigin(btVector3(4.5, 0, 0));
+	abdomen_cephalothorax = new btHingeConstraint(*abdomen->rigidBody, *cephalothorax->rigidBody, localA, localB);
+	abdomen_cephalothorax->setLimit(-0.5, 0.5);
+	dynamicsWorld->addConstraint(abdomen_cephalothorax);
+
+	btFixedConstraint* head_cephalothorax;
+	localA.setIdentity(); localB.setIdentity();
+	localA.setOrigin(btVector3(1.5, -0.5, 0));
+	localB.setOrigin(btVector3(-4.5, 0, 0));
+	head_cephalothorax = new btFixedConstraint(*head->rigidBody, *cephalothorax->rigidBody, localA, localB);
+	dynamicsWorld->addConstraint(head_cephalothorax);
+	
+	float leg_radius = 0.25f;
+	float leg_height = 1.41;
+	float leg_x = 10.5f;
+	float leg_m_x = 4.5f;
+	float leg_y = position.y + leg_height;
+	float leg_z = 6.0f;
+	float leg_m_z = 10.5f;
+	shared_ptr<PhysicsController> left_front_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_x, leg_y, position.z + leg_z), glm::quat());
+	shared_ptr<PhysicsController> right_front_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_x, leg_y, position.z - leg_z), glm::quat());
+	shared_ptr<PhysicsController> left_midfront_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_m_x, leg_y, position.z + leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> right_midfront_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_m_x, leg_y, position.z - leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> left_midrear_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_m_x, leg_y, position.z + leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> right_midrear_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_m_x, leg_y, position.z - leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> left_rear_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_x, leg_y, position.z + leg_z), glm::quat());
+	shared_ptr<PhysicsController> right_rear_1 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_x, leg_y, position.z - leg_z), glm::quat());
+
+	leg_height *= 2;
+	shared_ptr<PhysicsController> left_front_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_x, leg_y, position.z + leg_z), glm::quat());
+	shared_ptr<PhysicsController> right_front_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_x, leg_y, position.z - leg_z), glm::quat());
+	shared_ptr<PhysicsController> left_midfront_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_m_x, leg_y, position.z + leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> right_midfront_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x - leg_m_x, leg_y, position.z - leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> left_midrear_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_m_x, leg_y, position.z + leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> right_midrear_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_m_x, leg_y, position.z - leg_m_z), glm::quat());
+	shared_ptr<PhysicsController> left_rear_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_x, leg_y, position.z + leg_z), glm::quat());
+	shared_ptr<PhysicsController> right_rear_2 = CreateCapsule(leg_radius, leg_height, glm::vec3(position.x + leg_x, leg_y, position.z - leg_z), glm::quat());
+
+	float leg_euler_x = M_PI / 1.25f;
+	float leg_front_euler_z = M_PI / 3.0f;
+	float leg_rear_euler_z = -M_PI / 6.0f;
+	float leg_midfront_euler_z = M_PI / 12.0f;
+	float leg_midrear_euler_z = -M_PI / 12.0f;
+	float leg_origin_front = -3.5f;
+	float leg_origin_midfront = -1.5f;
+	float leg_origin_left = 2.0f;
+	float leg_origin_midleft = 3.5f;
+	float cephalothorax_leg_limit = M_PI / 6.0f;
+	float leg_origin_y = -1.0f;
+
+	localA.getBasis().setEulerZYX(0, 0, 0);
+	localB.setOrigin(btVector3(0, 2 * SQRT2, 0));
+
+	btConeTwistConstraint* cephal_left_front_leg;
+	localA.setOrigin(btVector3(leg_origin_front, leg_origin_y, leg_origin_left));
+	localB.getBasis().setEulerZYX(leg_euler_x, 0, leg_front_euler_z);
+	cephal_left_front_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *left_front_1->rigidBody, localA, localB);
+	cephal_left_front_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_left_front_leg);
+
+	btConeTwistConstraint* cephal_right_front_leg;
+	localA.setOrigin(btVector3(leg_origin_front, leg_origin_y, -leg_origin_left));
+	localB.getBasis().setEulerZYX(-leg_euler_x, 0, leg_front_euler_z);
+	cephal_right_front_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *right_front_1->rigidBody, localA, localB);
+	cephal_right_front_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_right_front_leg);
+
+	btConeTwistConstraint* cephal_left_rear_leg;
+	localA.setOrigin(btVector3(-leg_origin_front, leg_origin_y, leg_origin_left));
+	localB.getBasis().setEulerZYX(leg_euler_x, 0, leg_rear_euler_z);
+	cephal_left_rear_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *left_rear_1->rigidBody, localA, localB);
+	cephal_left_rear_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_left_rear_leg);
+
+	btConeTwistConstraint* cephal_right_rear_leg;
+	localA.setOrigin(btVector3(-leg_origin_front, leg_origin_y, -leg_origin_left));
+	localB.getBasis().setEulerZYX(-leg_euler_x, 0, leg_rear_euler_z);
+	cephal_right_rear_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *right_rear_1->rigidBody, localA, localB);
+	cephal_right_rear_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_right_rear_leg);
+
+	btConeTwistConstraint* cephal_left_midfront_leg;
+	localA.setOrigin(btVector3(leg_origin_midfront, leg_origin_y, leg_origin_midleft));
+	localB.getBasis().setEulerZYX(leg_euler_x, 0, leg_midfront_euler_z);
+	cephal_left_midfront_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *left_midfront_1->rigidBody, localA, localB);
+	cephal_left_midfront_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_left_midfront_leg);
+
+	btConeTwistConstraint* cephal_right_midfront_leg;
+	localA.setOrigin(btVector3(leg_origin_midfront, leg_origin_y, -leg_origin_midleft));
+	localB.getBasis().setEulerZYX(-leg_euler_x, 0, leg_midfront_euler_z);
+	cephal_right_midfront_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *right_midfront_1->rigidBody, localA, localB);
+	cephal_right_midfront_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_right_midfront_leg);
+
+	btConeTwistConstraint* cephal_left_midrear_leg;
+	localA.setOrigin(btVector3(-leg_origin_midfront, leg_origin_y, leg_origin_midleft));
+	localB.getBasis().setEulerZYX(leg_euler_x, 0, leg_midrear_euler_z);
+	cephal_left_midrear_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *left_midrear_1->rigidBody, localA, localB);
+	cephal_left_midrear_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_left_midrear_leg);
+
+	btConeTwistConstraint* cephal_right_midrear_leg;
+	localA.setOrigin(btVector3(-leg_origin_midfront, leg_origin_y, -leg_origin_midleft));
+	localB.getBasis().setEulerZYX(-leg_euler_x, 0, leg_midrear_euler_z);
+	cephal_right_midrear_leg = new btConeTwistConstraint(*cephalothorax->rigidBody, *right_midrear_1->rigidBody, localA, localB);
+	cephal_right_midrear_leg->setLimit(0, 0, cephalothorax_leg_limit);
+	dynamicsWorld->addConstraint(cephal_right_midrear_leg);
+
+	float leg_hinge_euler_y = M_PI / 2;
+	localA.setOrigin(btVector3(0, -2 * SQRT2 - 0.5, 0));
+	localB.setOrigin(btVector3(0, 4 * SQRT2 + 0.5, 0));
+	float leg_hinge_limit_low = -M_PI / 2;
+	float leg_hinge_limit_high = -M_PI / 3;
+
+	btHingeConstraint* left_front_leg_hinge;
+	localA.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_front_euler_z);
+	localB.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_front_euler_z);
+	left_front_leg_hinge = new btHingeConstraint(*left_front_1->rigidBody, *left_front_2->rigidBody, localA, localB);
+	left_front_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(left_front_leg_hinge);
+
+	btHingeConstraint* left_rear_leg_hinge;
+	localA.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_rear_euler_z);
+	localB.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_rear_euler_z);
+	left_rear_leg_hinge = new btHingeConstraint(*left_rear_1->rigidBody, *left_rear_2->rigidBody, localA, localB);
+	left_rear_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(left_rear_leg_hinge);
+
+	btHingeConstraint* left_midfront_leg_hinge;
+	localA.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_midfront_euler_z);
+	localB.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_midfront_euler_z);
+	left_midfront_leg_hinge = new btHingeConstraint(*left_midfront_1->rigidBody, *left_midfront_2->rigidBody, localA, localB);
+	left_midfront_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(left_midfront_leg_hinge);
+
+	btHingeConstraint* left_midrear_leg_hinge;
+	localA.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_midrear_euler_z);
+	localB.getBasis().setEulerZYX(0, leg_hinge_euler_y, leg_midrear_euler_z);
+	left_midrear_leg_hinge = new btHingeConstraint(*left_midrear_1->rigidBody, *left_midrear_2->rigidBody, localA, localB);
+	left_midrear_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(left_midrear_leg_hinge);
+
+	btHingeConstraint* right_front_leg_hinge;
+	localA.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_front_euler_z);
+	localB.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_front_euler_z);
+	right_front_leg_hinge = new btHingeConstraint(*right_front_1->rigidBody, *right_front_2->rigidBody, localA, localB);
+	right_front_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(right_front_leg_hinge);
+
+	btHingeConstraint* right_rear_leg_hinge;
+	localA.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_rear_euler_z);
+	localB.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_rear_euler_z);
+	right_rear_leg_hinge = new btHingeConstraint(*right_rear_1->rigidBody, *right_rear_2->rigidBody, localA, localB);
+	right_rear_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(right_rear_leg_hinge);
+
+	btHingeConstraint* right_midfront_leg_hinge;
+	localA.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_midfront_euler_z);
+	localB.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_midfront_euler_z);
+	right_midfront_leg_hinge = new btHingeConstraint(*right_midfront_1->rigidBody, *right_midfront_2->rigidBody, localA, localB);
+	right_midfront_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(right_midfront_leg_hinge);
+
+	btHingeConstraint* right_midrear_leg_hinge;
+	localA.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_midrear_euler_z);
+	localB.getBasis().setEulerZYX(0, -leg_hinge_euler_y, leg_midrear_euler_z);
+	right_midrear_leg_hinge = new btHingeConstraint(*right_midrear_1->rigidBody, *right_midrear_2->rigidBody, localA, localB);
+	right_midrear_leg_hinge->setLimit(leg_hinge_limit_low, leg_hinge_limit_high);
+	dynamicsWorld->addConstraint(right_midrear_leg_hinge);
+	
+
+	return cephalothorax;
 }

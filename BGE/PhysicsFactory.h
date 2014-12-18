@@ -18,13 +18,14 @@ namespace BGE
 		shared_ptr<PhysicsController> CreateBox(float width, float height, float depth, glm::vec3 pos, glm::quat quat, bool kinematic = false, bool attachToGame = true);
 		shared_ptr<PhysicsController> CreateSphere(float radius, glm::vec3 pos, glm::quat quat, bool kinematic = false, bool attachToGame = true);
 		shared_ptr<PhysicsController> CreateCylinder(float radius, float height, glm::vec3 pos, glm::quat quat, bool kinematic = false, bool attachToGame = true);
-		shared_ptr<PhysicsController> CreateCapsule(float radius, float height, glm::vec3 pos, glm::quat quat);
+		shared_ptr<PhysicsController> CreateCapsule(float radius, float height, glm::vec3 pos, glm::quat quat, bool kinematic = false);
 		shared_ptr<PhysicsController> CreateCapsuleRagdoll(glm::vec3 position);
 		shared_ptr<PhysicsController> CreateVehicle(glm::vec3 pos);
 		shared_ptr<PhysicsController> CreateCameraPhysics();
 		shared_ptr<PhysicsController> CreateGroundPhysics();
 		shared_ptr<PhysicsController> CreateFromModel(string name, glm::vec3 pos, glm::quat quat, glm::vec3 scale = glm::vec3(1));
-		
+		shared_ptr<PhysicsController> CreateSpider(glm::vec3 pos);
+
 		void CreateWall(glm::vec3 startAt, float width, float height, float blockWidth = 5, float blockHeight = 5, float blockDepth = 5);
 		shared_ptr<PhysicsController> CreateRandomObject(glm::vec3 point, glm::quat q, glm::vec3 scale = glm::vec3(1));
 		btDiscreteDynamicsWorld * dynamicsWorld;
